@@ -21,11 +21,11 @@ Application::~Application()
 // * 初始畫面，並顯示Ntust.png圖檔
 // 
 //============================================================================
-void Application::createScene(void)
+void Application::createScene( void )
 {
-
+	
 	ui_instance = Qt_Opengl_Framework::getInstance();
-
+	
 }
 
 //****************************************************************************
@@ -33,7 +33,7 @@ void Application::createScene(void)
 // * 打開指定圖檔
 // 
 //============================================================================
-void Application::openImage(QString filePath)
+void Application::openImage( QString filePath )
 {
 	mImageSrc.load(filePath);
 	mImageDst.load(filePath);
@@ -80,7 +80,7 @@ void Application::reload()
 // * 儲存圖檔
 // 
 //============================================================================
-void Application::saveImage(QString filePath)
+void Application::saveImage(QString filePath )
 {
 	mImageDst.save(filePath);
 }
@@ -90,12 +90,12 @@ void Application::saveImage(QString filePath)
 // * 將圖檔資料轉換為RGB色彩資料
 // 
 //============================================================================
-unsigned char* Application::To_RGB(void)
+unsigned char* Application::To_RGB( void )
 {
 	unsigned char *rgb = new unsigned char[img_width * img_height * 3];
 	int i, j;
 
-	if (!img_data)
+	if (! img_data )
 		return NULL;
 
 	// Divide out the alpha
@@ -104,16 +104,16 @@ unsigned char* Application::To_RGB(void)
 		int in_offset = i * img_width * 4;
 		int out_offset = i * img_width * 3;
 
-		for (j = 0; j < img_width; j++)
+		for (j = 0 ; j < img_width ; j++)
 		{
-			RGBA_To_RGB(img_data + (in_offset + j * 4), rgb + (out_offset + j * 3));
+			RGBA_To_RGB(img_data + (in_offset + j*4), rgb + (out_offset + j*3));
 		}
 	}
 
 	return rgb;
 }
 
-void Application::RGBA_To_RGB(unsigned char *rgba, unsigned char *rgb)
+void Application::RGBA_To_RGB( unsigned char *rgba, unsigned char *rgb )
 {
 	const unsigned char	BACKGROUND[3] = { 0, 0, 0 };
 
@@ -131,7 +131,7 @@ void Application::RGBA_To_RGB(unsigned char *rgba, unsigned char *rgb)
 		int	val;
 		int	i;
 
-		for (i = 0; i < 3; i++)
+		for (i = 0 ; i < 3 ; i++)
 		{
 			val = (int)floor(rgba[i] * alpha_scale);
 			if (val < 0)
@@ -156,22 +156,22 @@ void Application::Gray()
 {
 	unsigned char *rgb = To_RGB();
 
-	for (int i = 0; i<img_height; i++)
+	for (int i=0; i<img_height; i++)
 	{
-		for (int j = 0; j<img_width; j++)
+		for (int j=0; j<img_width; j++)
 		{
-			int offset_rgb = i*img_width * 3 + j * 3;
-			int offset_rgba = i*img_width * 4 + j * 4;
+			int offset_rgb = i*img_width*3+j*3;
+			int offset_rgba = i*img_width*4+j*4;
 			unsigned char gray = 0.3 * rgb[offset_rgb + rr] + 0.59 * rgb[offset_rgb + gg] + 0.11 * rgb[offset_rgb + bb];
 
-			for (int k = 0; k<3; k++)
-				img_data[offset_rgba + k] = gray;
+			for (int k=0; k<3; k++)
+				img_data[offset_rgba+k] = gray;
 			img_data[offset_rgba + aa] = WHITE;
 		}
 	}
-
+	
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -190,15 +190,15 @@ void Application::Quant_Uniform()
 		{
 			int offset_rgb = i*img_width * 3 + j * 3;
 			int offset_rgba = i*img_width * 4 + j * 4;
-			img_data[offset_rgba + rr] = (rgb[offset_rgb + rr] >> 5) << 5;
-			img_data[offset_rgba + gg] = (rgb[offset_rgb + gg] >> 5) << 5;
-			img_data[offset_rgba + bb] = (rgb[offset_rgb + bb] >> 5) << 5;
+			img_data[offset_rgba + rr] = (rgb[offset_rgb + rr]>>5)<<5;
+			img_data[offset_rgba + gg] = (rgb[offset_rgb + gg]>>5)<<5;
+			img_data[offset_rgba + bb] = (rgb[offset_rgb + bb]>>5)<<5;
 			img_data[offset_rgba + aa] = WHITE;
 		}
 	}
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -222,7 +222,7 @@ void Application::Quant_Populosity()
 			rgb[offset_rgb + rr] = (rgb[offset_rgb + rr] >> 3) << 3;
 			rgb[offset_rgb + gg] = (rgb[offset_rgb + gg] >> 3) << 3;
 			rgb[offset_rgb + bb] = (rgb[offset_rgb + bb] >> 3) << 3;
-			pixels[pixelIdx] = std::make_tuple(rgb[offset_rgb + rr], rgb[offset_rgb + gg], rgb[offset_rgb + bb]);
+			pixels[pixelIdx] = std::make_tuple(rgb[offset_rgb + rr],rgb[offset_rgb + gg],rgb[offset_rgb + bb]);
 		}
 	}
 	//
@@ -230,13 +230,13 @@ void Application::Quant_Populosity()
 	for (int i = 0; i < pixelCount; ++i) {
 		countColor[pixels[i]]++;
 	}
-	std::vector<std::pair<Pixel, int> > vpCount(countColor.begin(), countColor.end());
+	std::vector<std::pair<Pixel, int> > vpCount(countColor.begin(),countColor.end());
 	//std::copy(countColor.begin(), countColor.end(), back_inserter(vpCount));
 	std::sort(vpCount.begin(), vpCount.end(), [](const std::pair<Pixel, int>& a, const std::pair<Pixel, int>& b) {return a.second > b.second; });
 	//
 	std::map<Pixel, Pixel> closest;
 	unsigned int bound = 256 < vpCount.size() ? 256 : vpCount.size();
-	for (auto it : countColor) {
+	for (auto it:countColor) {
 		unsigned int minIdx = 0, minVal = 0xffffffff;
 		for (int j = 0; j < bound; ++j) {
 			int dist = pow(std::get<0>(it.first) - std::get<0>(vpCount[j].first), 2);
@@ -268,7 +268,7 @@ void Application::Quant_Populosity()
 
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 
@@ -279,10 +279,10 @@ void Application::Quant_Populosity()
 //  Dither the image using a threshold of 1/2.  Return success of operation.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void Application::Dither_Threshold()
+void Application::Dither_threshold()
 {
 	unsigned char *rgb = this->To_RGB();
-	const unsigned char Threshold = 127;
+	const unsigned char threshold = 127;
 	for (int i = 0; i<img_height; i++)
 	{
 		for (int j = 0; j<img_width; j++)
@@ -290,7 +290,7 @@ void Application::Dither_Threshold()
 			int offset_rgb = i*img_width * 3 + j * 3;
 			int offset_rgba = i*img_width * 4 + j * 4;
 			unsigned char result = 0.3 * rgb[offset_rgb + rr] + 0.59 * rgb[offset_rgb + gg] + 0.11 * rgb[offset_rgb + bb];
-			result = result > Threshold ? 255 : 0;
+			result = result > threshold ? 255 : 0;
 			img_data[offset_rgba + rr] = result;
 			img_data[offset_rgba + gg] = result;
 			img_data[offset_rgba + bb] = result;
@@ -299,7 +299,7 @@ void Application::Dither_Threshold()
 	}
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -311,19 +311,19 @@ void Application::Dither_Random()
 {
 	unsigned char *rgb = this->To_RGB();
 
-	const unsigned char Threshold = 127, randMax = 51;// 51 = 255*0.2
+	const unsigned char threshold = 127,randMax = 51;// 51 = 255*0.2
 	int randVal;
-
+	
 	for (int i = 0; i<img_height; i++)
 	{
 		for (int j = 0; j<img_width; j++)
 		{
 			int offset_rgb = i*img_width * 3 + j * 3;
 			int offset_rgba = i*img_width * 4 + j * 4;
-			randVal = (rand() % (randMax * 2)) - randMax;
+			randVal = (rand() % (randMax*2))-randMax;
 			int result = 0.3 * rgb[offset_rgb + rr] + 0.59 * rgb[offset_rgb + gg] + 0.11 * rgb[offset_rgb + bb];
 			result += randVal;
-			result = result > Threshold ? 255 : 0;
+			result = result > threshold ? 255 : 0;
 			img_data[offset_rgba + rr] = result;
 			img_data[offset_rgba + gg] = result;
 			img_data[offset_rgba + bb] = result;
@@ -332,7 +332,7 @@ void Application::Dither_Random()
 	}
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -344,11 +344,38 @@ void Application::Dither_Random()
 void Application::Dither_FS()
 {
 	unsigned char *rgb = this->To_RGB();
+	int briSize =  img_width*img_height;
+	float threshold = 0.5;
+	std::vector<float> bright(briSize);
+	for (int i = 0; i < briSize; ++i) {
+		bright[i] = 0.3 * rgb[i*3 + rr] + 0.59 * rgb[i*3 + gg] + 0.11 * rgb[i*3 + bb];
+		bright[i] /= 255.0;
+	}
+	for (int i = 0; i < img_height; i++)
+	{
+		for (int j = (i&1)?img_width-1:0; (i & 1) ? j>=0: j<img_width; j+= (i & 1) ? - 1 : 1)// z path
+		//for(int j=0;j<img_width;++j)
+		{
+			int offset_rgba = i*img_width * 4 + j * 4;
+			int offset_bright = i*img_width + j;
+			bool result = bright[offset_bright] > threshold ? true : false;
+			float error = result?(bright[offset_bright]-1): bright[offset_bright];
+			if(j != img_width - 1)bright[offset_bright + 1] += 0.4375*error;
+			if (j != 0 && i != img_height - 1)bright[offset_bright + img_width - 1] += 0.1875*error;
+			if (i != img_height - 1)bright[offset_bright + img_width] += 0.3125*error;
+			if (i != img_height - 1&& j != img_width - 1)bright[offset_bright + img_width + 1] += 0.0625*error;
+			img_data[offset_rgba + rr] = result ? 255 : 0;
+			img_data[offset_rgba + gg] = result ? 255 : 0;
+			img_data[offset_rgba + bb] = result ? 255 : 0;
+			img_data[offset_rgba + aa] = WHITE;
 
+
+		}
+	}
 
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -360,8 +387,8 @@ void Application::Dither_FS()
 void Application::Dither_Bright()
 {
 	unsigned char *rgb = this->To_RGB();
-	unsigned char Threshold;
-	std::vector<unsigned char> grayList(img_width*img_height);
+	float threshold;
+	std::vector<float> grayList(img_width*img_height);
 	unsigned int graySum = 0;
 	double brightness = 0;
 	for (int i = 0; i<img_height; i++)
@@ -370,22 +397,22 @@ void Application::Dither_Bright()
 		{
 			int offset_rgb = i*img_width * 3 + j * 3;
 			int offset_pixel = i*img_width + j;
-			grayList[offset_pixel] = 0.3 * rgb[offset_rgb + rr] + 0.59 * rgb[offset_rgb + gg] + 0.11 * rgb[offset_rgb + bb];
+			grayList[offset_pixel]=0.3 * rgb[offset_rgb + rr] + 0.59 * rgb[offset_rgb + gg] + 0.11 * rgb[offset_rgb + bb];
 			graySum += grayList[offset_pixel];
 		}
 	}
 	brightness = graySum / (double)(img_width*img_height);
 	brightness /= 255.0;
-	std::vector<unsigned char> sortedGrayList(grayList);
+	std::vector<float> sortedGrayList(grayList);
 	std::sort(sortedGrayList.begin(), sortedGrayList.end());
-	Threshold = sortedGrayList[(1 - brightness)*(sortedGrayList.size() - 1)];
+	threshold = sortedGrayList[(1 - brightness)*(sortedGrayList.size()-1)]/255.0;
 	for (int i = 0; i<img_height; i++)
 	{
 		for (int j = 0; j<img_width; j++)
 		{
 			int offset_pixel = i*img_width + j;
 			int offset_rgba = i*img_width * 4 + j * 4;
-			unsigned char result = grayList[offset_pixel] > Threshold ? 255 : 0;
+			unsigned char result = (grayList[offset_pixel]/255.0) > threshold ? 255 : 0;
 			img_data[offset_rgba + rr] = result;
 			img_data[offset_rgba + gg] = result;
 			img_data[offset_rgba + bb] = result;
@@ -393,7 +420,7 @@ void Application::Dither_Bright()
 		}
 	}
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -404,11 +431,28 @@ void Application::Dither_Bright()
 void Application::Dither_Cluster()
 {
 	unsigned char *rgb = this->To_RGB();
-
-
-
+	float clusterthreshold[4][4]={
+		{.7059,.3529,.5882,.2353},
+		{.0588,.9412,.8235,.4118},
+		{.4706,.7647,.8824,.1176},
+		{.1765,.5294,.2941,.6471}
+	};
+	for (int i = 0; i<img_height; i++)
+	{
+		for (int j = 0; j<img_width; j++)
+		{
+			int offset_rgb = i*img_width * 3 + j * 3;
+			int offset_rgba = i*img_width * 4 + j * 4;
+			int result = 0.3 * rgb[offset_rgb + rr] + 0.59 * rgb[offset_rgb + gg] + 0.11 * rgb[offset_rgb + bb];
+			result = (result/(float)255 > clusterthreshold[i%4][j%4]) ? 255 : 0;
+			img_data[offset_rgba + rr] = result;
+			img_data[offset_rgba + gg] = result;
+			img_data[offset_rgba + bb] = result;
+			img_data[offset_rgba + aa] = WHITE;
+		}
+	}
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -421,11 +465,87 @@ void Application::Dither_Cluster()
 void Application::Dither_Color()
 {
 	unsigned char *rgb = this->To_RGB();
+	unsigned char colorTable[3][8] = {
+		{0,36,73,109,146,182,219,255},
+		{0,36,73,109,146,182,219,255},
+		{0,85,170,255}
+	};
+	int tmp;
+	for (int i = 0; i < img_height; i++)
+	{
+		for (int j = (i & 1) ? img_width - 1 : 0; (i & 1) ? j >= 0 : j<img_width; j += (i & 1) ? -1 : 1)// z path
+		//for(int j=0;j<img_width;++j)
+		{
+			int offset_rgb = i*img_width * 3 + j * 3,offset_othergb = 0;
+			int offset_rgba = i*img_width * 4 + j * 4;
+			int errors[3] ={0x7fffffff,0x7fffffff,0x7fffffff};
+			unsigned char newRGB[3];
+			for (int k = 0; k < 8; ++k) {
+				int errorVal = rgb[offset_rgb + rr] - colorTable[0][k];
+				if (std::abs(errorVal) < std::abs(errors[0])) {
+					newRGB[0] = colorTable[0][k];
+					errors[0] = errorVal;
+				}
+				errorVal = rgb[offset_rgb + gg] - colorTable[1][k];
+				if (std::abs(errorVal) < std::abs(errors[1])) {
+					newRGB[1] = colorTable[1][k];
+					errors[1] = errorVal;
+				}
+				if (k < 4) {
+					errorVal = rgb[offset_rgb + bb] - colorTable[2][k];
+					if (std::abs(errorVal) < std::abs(errors[2])) {
+						newRGB[2] = colorTable[2][k];
+						errors[2] = errorVal;
+					}
+				}
+			}
+			if (j != img_width - 1) {
+				offset_othergb = i*img_width * 3 + (j + 1) * 3;
+				for (int k = 0; k < 3; ++k) {
+					tmp = rgb[offset_othergb + 2-k] + 0.4375*errors[k];
+					tmp = tmp > 255 ? 255 : tmp;
+					tmp = tmp < 0 ? 0 : tmp;
+					rgb[offset_othergb + 2-k] = tmp;
+				}
+			}
+			if (j != 0 && i != img_height - 1) {
+				offset_othergb = (i + 1)*img_width * 3 + (j - 1) * 3; 
+				for (int k = 0; k < 3; ++k) {
+					tmp = rgb[offset_othergb + 2 - k] + 0.1875*errors[k];
+					tmp = tmp > 255 ? 255 : tmp;
+					tmp = tmp < 0 ? 0 : tmp;
+					rgb[offset_othergb + 2 - k] = tmp;
+				}
+			}
+			if (i != img_height - 1) {
+				offset_othergb = (i + 1)*img_width * 3 + j * 3;
+				for (int k = 0; k < 3; ++k) {
+					tmp = rgb[offset_othergb + 2 - k] + 0.3125*errors[k];
+					tmp = tmp > 255 ? 255 : tmp;
+					tmp = tmp < 0 ? 0 : tmp;
+					rgb[offset_othergb + 2 - k] = tmp;
+				};
+			}
+			if (i != img_height - 1 && j != img_width - 1) {
+				offset_othergb = (i + 1)*img_width * 3 + (j + 1) * 3;
+				for (int k = 0; k < 3; ++k) {
+					tmp = rgb[offset_othergb + 2 - k] + 0.0625*errors[k];
+					tmp = tmp > 255 ? 255 : tmp;
+					tmp = tmp < 0 ? 0 : tmp;
+					rgb[offset_othergb + 2 - k] = tmp;
+				};
+			}
+			img_data[offset_rgba + rr] = newRGB[0];
+			img_data[offset_rgba + gg] = newRGB[1];
+			img_data[offset_rgba + bb] = newRGB[2];
+			img_data[offset_rgba + aa] = WHITE;
+		}
+	}
 
 
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 
@@ -436,25 +556,25 @@ void Application::Dither_Color()
 //     Filtering the img_data array by the filter from the parameters
 //
 ///////////////////////////////////////////////////////////////////////////////
-void Application::filtering(double filter[][5])
+void Application::filtering( double filter[][5] )
 {
 	unsigned char *rgb = this->To_RGB();
 
 
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 
-void Application::filtering(double **filter, int n)
+void Application::filtering( double **filter, int n )
 {
 	unsigned char *rgb = this->To_RGB();
 
 
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -492,7 +612,7 @@ void Application::Filter_Gaussian()
 //  operation.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void Application::Filter_Gaussian_N(unsigned int N)
+void Application::Filter_Gaussian_N( unsigned int N )
 {
 
 }
@@ -519,7 +639,7 @@ void Application::Filter_Enhance()
 
 
 	delete[] rgb;
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 
@@ -534,16 +654,16 @@ void Application::Half_Size()
 {
 	unsigned char *rgb = this->To_RGB();
 	int hc = 0;
-	for (int i = 0; i<img_height; i+=2)
+	for (int i = 0; i<img_height; i += 2)
 	{
-		for (int j = 0; j<img_width; j+=2)
+		for (int j = 0; j<img_width; j += 2)
 		{
-			int newRgb[3] = { 0 },offset_rgba= i * img_height + j*2;
+			int newRgb[3] = { 0 }, offset_rgba = i * img_height + j * 2;
 			if (i + 1 >= img_height)
 				--i;
 			if (j + 1 >= img_width)
 				--j;
-			newRgb[0] = rgb[i*img_width * 3 + j * 3 + rr] + rgb[i*img_width * 3 + (j+1) * 3 + rr]+ rgb[(i+1)*img_width * 3 + j * 3 + rr]+ rgb[(i+1)*img_width * 3 + (j+1) * 3 + rr];
+			newRgb[0] = rgb[i*img_width * 3 + j * 3 + rr] + rgb[i*img_width * 3 + (j + 1) * 3 + rr] + rgb[(i + 1)*img_width * 3 + j * 3 + rr] + rgb[(i + 1)*img_width * 3 + (j + 1) * 3 + rr];
 			newRgb[1] = rgb[i*img_width * 3 + j * 3 + gg] + rgb[i*img_width * 3 + (j + 1) * 3 + gg] + rgb[(i + 1)*img_width * 3 + j * 3 + gg] + rgb[(i + 1)*img_width * 3 + (j + 1) * 3 + gg];
 			newRgb[2] = rgb[i*img_width * 3 + j * 3 + bb] + rgb[i*img_width * 3 + (j + 1) * 3 + bb] + rgb[(i + 1)*img_width * 3 + j * 3 + bb] + rgb[(i + 1)*img_width * 3 + (j + 1) * 3 + bb];
 			newRgb[0] /= 4;
@@ -555,8 +675,8 @@ void Application::Half_Size()
 			img_data[offset_rgba + aa] = WHITE;
 		}
 	}
-	img_height =(img_height + 1) /2;
-	img_width = (img_width + 1) /2;
+	img_height = (img_height + 1) / 2;
+	img_width = (img_width + 1) / 2;
 	delete[] rgb;
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
 	renew();
@@ -568,7 +688,7 @@ void Application::Half_Size()
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Double_Size()
 {
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -587,9 +707,9 @@ void Application::resample_src(int u, int v, float ww, unsigned char* rgba)
 //	assumed to be greater than one.  Return success of operation.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void Application::Resize(float scale)
+void Application::Resize( float scale )
 {
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 
@@ -599,16 +719,16 @@ void Application::Resize(float scale)
 //  image.  Return success of operation.
 //
 ///////////////////////////////////////////////////////////////////////////////
-void Application::Rotate(float angleDegrees)
+void Application::Rotate( float angleDegrees )
 {
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 
 //------------------------Composing------------------------
 
 
-void Application::loadSecondaryImge(QString filePath)
+void Application::loadSecondaryImge( QString filePath )
 {
 	mImageSrcSecond.load(filePath);
 
@@ -624,9 +744,9 @@ void Application::loadSecondaryImge(QString filePath)
 //	Composite the image A and image B by Over, In, Out, Xor and Atom. 
 //
 //////////////////////////////////////////////////////////////////////////
-void Application::Comp_image(int tMethod)
+void Application::Comp_image( int tMethod )
 {
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 
@@ -732,11 +852,11 @@ void Application::Comp_Xor()
 ///////////////////////////////////////////////////////////////////////////////
 void Application::NPR_Paint()
 {
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
 }
 
-void Application::NPR_Paint_Layer(unsigned char *tCanvas, unsigned char *tReferenceImage, int tBrushSize)
+void Application::NPR_Paint_Layer( unsigned char *tCanvas, unsigned char *tReferenceImage, int tBrushSize )
 {
 
 }
@@ -747,30 +867,30 @@ void Application::NPR_Paint_Layer(unsigned char *tCanvas, unsigned char *tRefere
 // the given location
 //
 ///////////////////////////////////////////////////////////////////////////////
-void Application::Paint_Stroke(const Stroke& s)
+void Application::Paint_Stroke( const Stroke& s )
 {
 	int radius_squared = (int)s.radius * (int)s.radius;
-	for (int x_off = -((int)s.radius); x_off <= (int)s.radius; x_off++)
+	for (int x_off = -((int)s.radius); x_off <= (int)s.radius; x_off++) 
 	{
-		for (int y_off = -((int)s.radius); y_off <= (int)s.radius; y_off++)
+		for (int y_off = -((int)s.radius); y_off <= (int)s.radius; y_off++) 
 		{
 			int x_loc = (int)s.x + x_off;
 			int y_loc = (int)s.y + y_off;
 
 			// are we inside the circle, and inside the image?
-			if ((x_loc >= 0 && x_loc < img_width && y_loc >= 0 && y_loc < img_height))
+			if ((x_loc >= 0 && x_loc < img_width && y_loc >= 0 && y_loc < img_height)) 
 			{
 				int dist_squared = x_off * x_off + y_off * y_off;
 				int offset_rgba = (y_loc * img_width + x_loc) * 4;
 
-				if (dist_squared <= radius_squared)
+				if (dist_squared <= radius_squared) 
 				{
 					img_data[offset_rgba + rr] = s.r;
 					img_data[offset_rgba + gg] = s.g;
 					img_data[offset_rgba + bb] = s.b;
 					img_data[offset_rgba + aa] = s.a;
-				}
-				else if (dist_squared == radius_squared + 1)
+				} 
+				else if (dist_squared == radius_squared + 1) 
 				{
 					img_data[offset_rgba + rr] = (img_data[offset_rgba + rr] + s.r) / 2;
 					img_data[offset_rgba + gg] = (img_data[offset_rgba + gg] + s.g) / 2;
@@ -800,7 +920,9 @@ Stroke::Stroke() {}
 ///////////////////////////////////////////////////////////////////////////////
 Stroke::Stroke(unsigned int iradius, unsigned int ix, unsigned int iy,
 	unsigned char ir, unsigned char ig, unsigned char ib, unsigned char ia) :
-	radius(iradius), x(ix), y(iy), r(ir), g(ig), b(ib), a(ia)
+radius(iradius),x(ix),y(iy),r(ir),g(ig),b(ib),a(ia)
 {
 }
+
+
 
