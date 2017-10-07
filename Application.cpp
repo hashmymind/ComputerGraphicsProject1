@@ -593,7 +593,35 @@ void Application::filtering( double filter[][5] )
 void Application::filtering( double **filter, int n )
 {
 	unsigned char *rgb = this->To_RGB();
-
+	int subt = n / 2;
+	for (int i = 0; i < img_height; i++)
+	{
+		for (int j = 0; j < img_width; j++)
+		{
+			int offset_rgb;
+			int offset_rgba = i*img_width * 4 + j * 4;
+			float newColor[3] = { 0 };
+			
+			for (int ni = i - subt; ni <= i + (n%2==0?(subt-1):subt); ++ni) {
+				if (ni >= img_height || ni < 0)continue;
+				for (int nj = j - subt; nj <= j + (n % 2 == 0 ? (subt - 1) : subt); ++nj) {
+					if (nj >= img_width || nj < 0)continue;
+					offset_rgb = ni*img_width * 3 + nj * 3;
+					newColor[0] += rgb[offset_rgb + rr] * filter[ni - i + subt][nj - j + subt];
+					newColor[1] += rgb[offset_rgb + gg] * filter[ni - i + subt][nj - j + subt];
+					newColor[2] += rgb[offset_rgb + bb] * filter[ni - i + subt][nj - j + subt];
+				}
+			}
+			for (int k = 0; k < 3; ++k) {
+				if (newColor[k] > 255)newColor[k] = 255;
+				if (newColor[k] < 0) newColor[k] = 0;
+			}
+			img_data[offset_rgba + rr] = newColor[0];
+			img_data[offset_rgba + gg] = newColor[1];
+			img_data[offset_rgba + bb] = newColor[2];
+			img_data[offset_rgba + aa] = WHITE;
+		}
+	}
 
 
 	delete[] rgb;
@@ -674,7 +702,20 @@ void Application::Filter_Gaussian()
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Filter_Gaussian_N( unsigned int N )
 {
-
+	double **weight = new double*[N];
+	for (int i = 0; i < N; ++i) weight[i] = new double[N];
+	double sigma = 1;
+	double mean = N / 2;
+	double sum = 0.0; // For accumulating the kernel values
+	for (int x = 0; x < N; ++x)for (int y = 0; y < N; ++y) {
+		weight[x][y] = exp(-0.5 * (pow((x - mean) / sigma, 2.0) + pow((y - mean) / sigma, 2.0)))/ (2 * M_PI * sigma * sigma);
+		// Accumulate the kernel values
+		sum += weight[x][y];
+	}
+	for (int x = 0; x < N; ++x)
+		for (int y = 0; y < N; ++y)
+			weight[x][y] /= sum;
+	filtering(weight, N);
 }
 ///////////////////////////////////////////////////////////////////////////////
 //
