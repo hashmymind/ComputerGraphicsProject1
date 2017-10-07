@@ -39,7 +39,6 @@ void Application::openImage( QString filePath )
 	mImageDst.load(filePath);
 
 	renew();
-
 	img_data = mImageSrc.bits();
 	img_width = mImageSrc.width();
 	img_height = mImageSrc.height();
@@ -559,9 +558,33 @@ void Application::Dither_Color()
 void Application::filtering( double filter[][5] )
 {
 	unsigned char *rgb = this->To_RGB();
-
-
-
+	for (int i = 0; i < img_height; i++)
+	{
+		for (int j = 0; j < img_width; j++)
+		{
+			int offset_rgb;
+			int offset_rgba = i*img_width * 4 + j * 4;
+			float newColor[3] = { 0 };
+			for (int ni = i - 2; ni <= i + 2; ++ni) {
+				if (ni >= img_height || ni < 0)continue;
+				for (int nj = j - 2; nj <= j + 2; ++nj) {
+					if (nj >= img_width || nj < 0)continue;
+					offset_rgb = ni*img_width * 3 + nj * 3;
+					newColor[0] += rgb[offset_rgb + rr] * filter[ni - i + 2][nj - j + 2];
+					newColor[1] += rgb[offset_rgb + gg] * filter[ni - i + 2][nj - j + 2];
+					newColor[2] += rgb[offset_rgb + bb] * filter[ni - i + 2][nj - j + 2];
+				}
+			}
+			for (int k = 0; k < 3; ++k) {
+				if (newColor[k] > 255)newColor[k] = 255;
+				if (newColor[k] < 0) newColor[k] = 0;
+			}
+			img_data[offset_rgba + rr] = newColor[0];
+			img_data[offset_rgba + gg] = newColor[1];
+			img_data[offset_rgba + bb] = newColor[2];
+			img_data[offset_rgba + aa] = WHITE;
+		}
+	}
 	delete[] rgb;
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
 	renew();
@@ -584,31 +607,17 @@ void Application::filtering( double **filter, int n )
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Filter_Box()
 {
-	unsigned char *rgb = this->To_RGB();
-	for (int i = 0; i < img_height; i++)
-	{
-		for (int j = 0; j < img_width; j++)
-		{
-			int offset_rgb;
-			int offset_rgba = i*img_width * 4 + j * 4;
-			float newColor[3] = { 0 };
-			for (int ni = i - 2; ni <= i + 2; ++ni) {
-				if (ni >= img_height || ni < 0)continue;
-				for (int nj = j - 2; nj <= j + 2; ++nj) {
-					if (nj >= img_width || nj < 0)continue;
-					offset_rgb = ni*img_width * 3 + nj * 3;
-					newColor[0] += rgb[offset_rgb + rr] * 0.04;
-					newColor[1] += rgb[offset_rgb + gg] * 0.04;
-					newColor[2] += rgb[offset_rgb + bb] * 0.04;
-				}
-			}
-			img_data[offset_rgba + rr] = newColor[0];
-			img_data[offset_rgba + gg] = newColor[1];
-			img_data[offset_rgba + bb] = newColor[2];
-			img_data[offset_rgba + aa] = WHITE;
-		}
+	double weight[5][5] = {
+		{ 1,1,1,1,1 },
+		{ 1,1,1,1,1 },
+		{ 1,1,1,1,1 },
+		{ 1,1,1,1,1 },
+		{ 1,1,1,1,1 }
+	};
+	for (int i = 0; i < 5; ++i)for (int j = 0; j < 5; ++j) {
+		weight[i][j] /= 25.0;
 	}
-	delete[] rgb;
+	filtering(weight);
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
 	renew();
 }
@@ -620,39 +629,18 @@ void Application::Filter_Box()
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Filter_Bartlett()
 {
-	unsigned char *rgb = this->To_RGB();
-	int weight[5][5] = {
+	double weight[5][5] = {
 		{1,2,3,2,1},
 		{2,4,6,4,2},
 		{3,6,9,6,3},
 		{2,4,6,4,2},
 		{1,2,3,2,1}
 	};
-	for (int i = 0; i < img_height; i++)
-	{
-		for (int j = 0; j < img_width; j++)
-		{
-			int offset_rgb;
-			int offset_rgba = i*img_width * 4 + j * 4;
-			float newColor[3] = { 0 };
-			for (int ni = i - 2; ni <= i + 2; ++ni) {
-				if (ni >= img_height || ni < 0)continue;
-				for (int nj = j - 2; nj <= j + 2; ++nj) {
-					if (nj >= img_width || nj < 0)continue;
-					offset_rgb = ni*img_width * 3 + nj * 3;
-					newColor[0] += rgb[offset_rgb + rr] * weight[ni - i + 2][nj - j + 2];
-					newColor[1] += rgb[offset_rgb + gg] * weight[ni - i + 2][nj - j + 2];
-					newColor[2] += rgb[offset_rgb + bb] * weight[ni - i + 2][nj - j + 2];
-				}
-			}
-			img_data[offset_rgba + rr] = newColor[0]/81.0;
-			img_data[offset_rgba + gg] = newColor[1]/81.0;
-			img_data[offset_rgba + bb] = newColor[2]/81.0;
-			img_data[offset_rgba + aa] = WHITE;
-		}
+	for (int i = 0; i < 5; ++i)for (int j = 0; j < 5; ++j) {
+		weight[i][j] /= 81.0;
 	}
-
-	delete[] rgb;
+	filtering(weight);
+	int pixelCount = img_width * img_height;
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
 	renew();
 }
@@ -664,38 +652,17 @@ void Application::Filter_Bartlett()
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Filter_Gaussian()
 {
-	unsigned char *rgb = this->To_RGB();
-	int weight[5][5] = {
+	double weight[5][5] = {
 		{ 1, 4, 6, 4,1 },
 		{ 4,16,24,16,4 },
 		{ 6,24,36,24,6 },
 		{ 4,16,24,16,4 },
 		{ 1, 4, 6, 4,1 }
 	};
-	for (int i = 0; i < img_height; i++)
-	{
-		for (int j = 0; j < img_width; j++)
-		{
-			int offset_rgb;
-			int offset_rgba = i*img_width * 4 + j * 4;
-			float newColor[3] = { 0 };
-			for (int ni = i - 2; ni <= i + 2; ++ni) {
-				if (ni >= img_height || ni < 0)continue;
-				for (int nj = j - 2; nj <= j + 2; ++nj) {
-					if (nj >= img_width || nj < 0)continue;
-					offset_rgb = ni*img_width * 3 + nj * 3;
-					newColor[0] += rgb[offset_rgb + rr] * weight[ni - i + 2][nj - j + 2];
-					newColor[1] += rgb[offset_rgb + gg] * weight[ni - i + 2][nj - j + 2];
-					newColor[2] += rgb[offset_rgb + bb] * weight[ni - i + 2][nj - j + 2];
-				}
-			}
-			img_data[offset_rgba + rr] = newColor[0] / 256.0;
-			img_data[offset_rgba + gg] = newColor[1] / 256.0;
-			img_data[offset_rgba + bb] = newColor[2] / 256.0;
-			img_data[offset_rgba + aa] = WHITE;
-		}
+	for (int i = 0; i < 5; ++i)for (int j = 0; j < 5; ++j) {
+		weight[i][j] /= 256.0;
 	}
-	delete[] rgb;
+	filtering(weight);
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
 	renew();
 }
@@ -717,42 +684,17 @@ void Application::Filter_Gaussian_N( unsigned int N )
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Filter_Edge()
 {
-	unsigned char *rgb = this->To_RGB();
-	int weight[5][5] = {
-		{ 1, 4, 6, 4,1 },
-		{ 4,16,24,16,4 },
-		{ 6,24,-220,24,6 },
-		{ 4,16,24,16,4 },
-		{ 1, 4, 6, 4,1 }
+	double weight[5][5] = {
+		{ -1, -4, -6, -4,-1 },
+		{ -4,-16,-24,-16,-4 },
+		{ -6,-24,220,-24,-6},
+		{ -4,-16,-24,-16,-4 },
+		{ -1, -4, -6, -4,-1 }
 	};
-	for (int i = 0; i < img_height; i++)
-	{
-		for (int j = 0; j < img_width; j++)
-		{
-			int offset_rgb;
-			int offset_rgba = i*img_width * 4 + j * 4;
-			float newColor[3] = { 0 };
-			for (int ni = i - 2; ni <= i + 2; ++ni) {
-				if (ni >= img_height || ni < 0)continue;
-				for (int nj = j - 2; nj <= j + 2; ++nj) {
-					if (nj >= img_width || nj < 0)continue;
-					offset_rgb = ni*img_width * 3 + nj * 3;
-					newColor[0] -= rgb[offset_rgb + rr] * weight[ni - i + 2][nj - j + 2];
-					newColor[1] -= rgb[offset_rgb + gg] * weight[ni - i + 2][nj - j + 2];
-					newColor[2] -= rgb[offset_rgb + bb] * weight[ni - i + 2][nj - j + 2];
-				}
-			}
-			for (int k = 0; k < 3; ++k) {
-				newColor[k] = (newColor[k] > 0 ? newColor[k] : 0) / 256.0;
-				newColor[k] = newColor[k] > 255 ? 255 : newColor[k];
-			}
-			img_data[offset_rgba + rr] = newColor[0];
-			img_data[offset_rgba + gg] = newColor[1];
-			img_data[offset_rgba + bb] = newColor[2];
-			img_data[offset_rgba + aa] = WHITE;
-		}
+	for (int i = 0; i < 5; ++i)for (int j = 0; j < 5; ++j) {
+		weight[i][j] /= 256.0;
 	}
-	delete[] rgb;
+	filtering(weight);
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
 	renew();
 }
@@ -765,41 +707,35 @@ void Application::Filter_Edge()
 void Application::Filter_Enhance()
 {
 	unsigned char *rgb = this->To_RGB();
-	int weight[5][5] = {
-		{ 1, 4, 6, 4,1 },
-		{ 4,16,24,16,4 },
-		{ 6,24,-220,24,6 },
-		{ 4,16,24,16,4 },
-		{ 1, 4, 6, 4,1 }
+	double weight[5][5] = {
+		{ -1, -4, -6, -4,-1 },
+		{ -4,-16,-24,-16,-4 },
+		{ -6,-24,220,-24,-6 },
+		{ -4,-16,-24,-16,-4 },
+		{ -1, -4, -6, -4,-1 }
 	};
+	for (int i = 0; i < 5; ++i)for (int j = 0; j < 5; ++j) {
+		weight[i][j] /= 256.0;
+	}
+	filtering(weight);
 	for (int i = 0; i < img_height; i++)
 	{
 		for (int j = 0; j < img_width; j++)
 		{
-			int offset_rgb;
+			int offset_rgb = i*img_width * 3 + j * 3;
 			int offset_rgba = i*img_width * 4 + j * 4;
-			float newColor[3] = { 0 };
-			for (int ni = i - 2; ni <= i + 2; ++ni) {
-				if (ni >= img_height || ni < 0)continue;
-				for (int nj = j - 2; nj <= j + 2; ++nj) {
-					if (nj >= img_width || nj < 0)continue;
-					offset_rgb = ni*img_width * 3 + nj * 3;
-					newColor[0] -= rgb[offset_rgb + rr] * weight[ni - i + 2][nj - j + 2];
-					newColor[1] -= rgb[offset_rgb + gg] * weight[ni - i + 2][nj - j + 2];
-					newColor[2] -= rgb[offset_rgb + bb] * weight[ni - i + 2][nj - j + 2];
-				}
-			}
 			int tmp;
-			offset_rgb = i*img_width * 3 + j * 3;
-			tmp = (int)rgb[offset_rgb + rr] + ((newColor[0] > 0 ? newColor[0] : 0) / 256.0);
-			img_data[offset_rgba + rr] = tmp > 255 ? 255:tmp;
-			tmp = (int)rgb[offset_rgb + gg] + ((newColor[1] > 0 ? newColor[1] : 0) / 256.0);
+			tmp = (int)rgb[offset_rgb + rr] + (img_data[offset_rgba + rr] > 0 ? img_data[offset_rgba + rr] : 0);
+			img_data[offset_rgba + rr] = tmp > 255 ? 255 : tmp;
+			tmp = (int)rgb[offset_rgb + gg] + (img_data[offset_rgba + gg] > 0 ? img_data[offset_rgba + gg] : 0);
 			img_data[offset_rgba + gg] = tmp > 255 ? 255 : tmp;
-			tmp = (int)rgb[offset_rgb + bb] + ((newColor[2] > 0 ? newColor[2] : 0) / 256.0);
+			tmp = (int)rgb[offset_rgb + bb] + (img_data[offset_rgba + bb] > 0 ? img_data[offset_rgba + bb] : 0);
 			img_data[offset_rgba + bb] = tmp > 255 ? 255 : tmp;
 			img_data[offset_rgba + aa] = WHITE;
+
 		}
 	}
+	
 	delete[] rgb;
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
 	renew();
@@ -832,6 +768,8 @@ void Application::Half_Size()
 	}
 	img_height = img_height2 / 2;
 	img_width = img_width2 / 2;
+	ui_instance->ui.label->setFixedHeight(img_height);
+	ui_instance->ui.label->setFixedWidth(img_width);
 	delete[] rgb;
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
 	renew();
@@ -844,6 +782,7 @@ void Application::Half_Size()
 void Application::Double_Size()
 {
 	unsigned char *rgb = this->To_RGB();
+	unsigned char *new_img_data = new unsigned char[img_height * 2 * img_width * 2 * 4];
 	for (int i = 0; i<img_height; i++)
 	{
 		for (int j = 0; j<img_width; j++)
@@ -852,11 +791,11 @@ void Application::Double_Size()
 			int offset_rgba;
 			for (int k = 0; k < 2; ++k) {
 				for (int m = 0; m < 2; ++m) {
-					offset_rgba = (k+i)*img_width*4 + (m+j)*4*2;
+					offset_rgba = (i*2+k)*img_width*8 + (j*2+m)*4;
 					for (int l = 0; l < 3; ++l) {
-						img_data[offset_rgba + l] = rgb[offset_rgb + l];
+						new_img_data[offset_rgba + l] = rgb[offset_rgb +l];
 					}
-					img_data[offset_rgba + aa] = WHITE;
+					new_img_data[offset_rgba + aa] = 255;
 				}
 			}
 
@@ -864,8 +803,13 @@ void Application::Double_Size()
 	}
 	img_width *= 2;
 	img_height *= 2;
+	img_data = new_img_data;
+	ui_instance->ui.label->setFixedHeight(img_height);
+	ui_instance->ui.label->setFixedWidth(img_width);
 	delete[] rgb;
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32 );
+	//mImageDst.save("tmp.png");
+	//mImageDst.load("tmp.png");
 	renew();
 }
 ///////////////////////////////////////////////////////////////////////////////
