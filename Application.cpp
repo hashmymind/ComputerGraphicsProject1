@@ -4,9 +4,10 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <set>
 #include <tuple>
 
-using Pixel = std::tuple<unsigned char, unsigned char, unsigned char>;
+
 
 Application::Application()
 {
@@ -18,7 +19,7 @@ Application::~Application()
 }
 //****************************************************************************
 //
-// * ªì©lµe­±¡A¨ÃÅã¥ÜNtust.png¹ÏÀÉ
+// * åˆå§‹ç•«é¢ï¼Œä¸¦é¡¯ç¤ºNtust.pngåœ–æª”
 // 
 //============================================================================
 void Application::createScene(void)
@@ -31,7 +32,7 @@ void Application::createScene(void)
 
 //****************************************************************************
 //
-// * ¥´¶}«ü©w¹ÏÀÉ
+// * æ‰“é–‹æŒ‡å®šåœ–æª”
 // 
 //============================================================================
 void Application::openImage(QString filePath)
@@ -49,7 +50,7 @@ void Application::openImage(QString filePath)
 }
 //****************************************************************************
 //
-// * ¨ê·sµe­±
+// * åˆ·æ–°ç•«é¢
 // 
 //============================================================================
 void Application::renew()
@@ -64,7 +65,7 @@ void Application::renew()
 
 //****************************************************************************
 //
-// * µe­±ªì©l¤Æ
+// * ç•«é¢åˆå§‹åŒ–
 // 
 //============================================================================
 void Application::reload()
@@ -77,7 +78,7 @@ void Application::reload()
 
 //****************************************************************************
 //
-// * Àx¦s¹ÏÀÉ
+// * å„²å­˜åœ–æª”
 // 
 //============================================================================
 void Application::saveImage(QString filePath)
@@ -87,7 +88,7 @@ void Application::saveImage(QString filePath)
 
 //****************************************************************************
 //
-// * ±N¹ÏÀÉ¸ê®ÆÂà´«¬°RGB¦â±m¸ê®Æ
+// * å°‡åœ–æª”è³‡æ–™è½‰æ›ç‚ºRGBè‰²å½©è³‡æ–™
 // 
 //============================================================================
 unsigned char* Application::To_RGB(void)
@@ -272,12 +273,103 @@ void Application::Quant_Populosity()
 	renew();
 }
 
-
-
+void Application::getMedianCutColor(std::vector<Pixel>& color, unsigned char * rgb, int x, int y, int h, int w, int depth) {
+	//x -> i y -> j
+	if (!depth) {
+		// find the most common pixel in this region and push to color and return
+		std::map<Pixel, int> pixels;
+		for (int i = x; i < x + h; ++i) {
+			for (int j = y; j < y + w; ++j) {
+				int offset_rgb = i*img_width * 3 + j * 3;
+				Pixel tmp = std::make_tuple(rgb[offset_rgb + rr], rgb[offset_rgb + gg], rgb[offset_rgb + bb]);
+				pixels[tmp]++;
+			}
+		}
+		std::vector<std::pair<Pixel, int> > vpCount(pixels.begin(), pixels.end());
+		std::sort(vpCount.begin(), vpCount.end(), [](const std::pair<Pixel, int>& a, const std::pair<Pixel, int>& b) {return a.second > b.second; });
+		// do the best to prevent repeat
+		Pixel tmp = vpCount[0].first;
+		for (int i = 0; i < vpCount.size(); ++i) {
+			auto loc = std::find(color.begin(),color.end(),vpCount[i].first);
+			if (loc == color.end()) {
+				tmp = vpCount[i].first;
+				break;
+			}
+		}
+		color.push_back(tmp);
+		//
+		return;
+	}
+	else {
+		// cut
+		if (h > w) {
+			getMedianCutColor(color, rgb, x, y, h / 2, w, depth - 1);
+			getMedianCutColor(color, rgb, x+h/2, y, h/2, w, depth - 1);
+		}
+		else {
+			getMedianCutColor(color, rgb, x, y, h, w/2, depth - 1);
+			getMedianCutColor(color, rgb, x, y + w/2, h, w/2, depth - 1);
+		}
+	}
+}
 
 
 void Application::MedianCut() {
-	void;
+	unsigned char *rgb = this->To_RGB();
+	std::vector<Pixel> colors;
+	for (int i = 0; i < img_height; ++i) {
+		for (int j = 0; j < img_width; ++j) {
+			int offset_rgb = i*img_width * 3 + j * 3;
+			rgb[offset_rgb + rr] = (rgb[offset_rgb + rr] >> 3) << 3;
+			rgb[offset_rgb + gg] = (rgb[offset_rgb + gg] >> 3) << 3;
+			rgb[offset_rgb + bb] = (rgb[offset_rgb + bb] >> 3) << 3;
+		}
+	}
+	//cut picture to 256 pices
+	getMedianCutColor(colors, rgb, 0, 0, img_height, img_width, 8); // 8bits
+	//
+	std::set<Pixel> allColor;
+	for (int i = 0; i < img_height; ++i) {
+		for (int j = 0; j < img_width; ++j) {
+			int offset_rgb = i*img_width * 3 + j * 3;
+			Pixel tmp = std::make_tuple(rgb[offset_rgb + rr], rgb[offset_rgb + gg], rgb[offset_rgb + bb]);
+			allColor.insert(tmp);
+		}
+	}
+	std::map<Pixel, Pixel> closest;
+	for (auto it : allColor) {
+		unsigned int minIdx = 0, minVal = 0xffffffff;
+		for (int j = 0; j < 256; ++j) {
+			int dist = pow(std::get<0>(it) - std::get<0>(colors[j]), 2);
+			dist += pow(std::get<1>(it) - std::get<1>(colors[j]), 2);
+			dist += pow(std::get<2>(it) - std::get<2>(colors[j]), 2);
+			if (dist < minVal) {
+				minVal = dist;
+				minIdx = j;
+			}
+			if (!dist)break;
+		}
+		closest[it] = colors[minIdx];
+	}
+
+	for (int i = 0; i < img_height; ++i)
+	{
+		for (int j = 0; j < img_width; ++j)
+		{
+			int offset_rgb = i*img_width * 3 + j * 3;
+			int offset_rgba = i*img_width * 4 + j * 4;
+			Pixel tmp = std::make_tuple(rgb[offset_rgb + rr], rgb[offset_rgb + gg], rgb[offset_rgb + bb]);
+			Pixel closeColor = closest[tmp];
+			img_data[offset_rgba + rr] = std::get<0>(closeColor);
+			img_data[offset_rgba + gg] = std::get<1>(closeColor);
+			img_data[offset_rgba + bb] = std::get<2>(closeColor);
+			img_data[offset_rgba + aa] = WHITE;
+		}
+	}
+
+	delete[] rgb;
+	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	renew();
 }
 
 
@@ -878,8 +970,7 @@ void Application::Double_Size()
 //
 ///////////////////////////////////////////////////////////////////////////////
 void Application::resample_src(int u, int v, float ww, unsigned char* rgba)
-{
-
+{	
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1082,13 +1173,68 @@ void Application::Comp_Xor()
 ///////////////////////////////////////////////////////////////////////////////
 void Application::NPR_Paint()
 {
-	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
+	unsigned char *rgb = this->To_RGB();
+	unsigned char *copy_data = new unsigned char[img_width * img_height * 4];
+	unsigned char *canvas = new unsigned char[img_width * img_height * 4];
+	unsigned char *gaussianed = new unsigned char[img_width * img_height * 4];;
+	memcpy(copy_data, img_data, sizeof(unsigned char)*img_width * img_height * 4);
+	memcpy(canvas, img_data, sizeof(unsigned char)*img_width * img_height * 4);
+	const int brushCount = 4;
+	const int brushSizes[brushCount] = {15,8,4,2};
+	for (int i = 0; i < brushCount; ++i) {
+		memcpy(img_data, copy_data, sizeof(unsigned char)*img_width * img_height * 4);
+		Filter_Gaussian_N(brushSizes[i]);
+		memcpy(gaussianed, img_data, sizeof(unsigned char)*img_width * img_height * 4);
+		memcpy(img_data, canvas, sizeof(unsigned char)*img_width * img_height * 4);
+		NPR_Paint_Layer(img_data, gaussianed, brushSizes[i]);
+		memcpy(canvas, img_data, sizeof(unsigned char)*img_width * img_height * 4);
+	}
+	delete[] rgb;
+	mImageDst = QImage(canvas, img_width, img_height, QImage::Format_ARGB32);
 	renew();
 }
 
 void Application::NPR_Paint_Layer(unsigned char *tCanvas, unsigned char *tReferenceImage, int tBrushSize)
 {
-
+	int pixelCount = img_width * img_height;
+	std::vector<int> differents(pixelCount);
+	std::vector<Stroke> strokes;
+	double threshold = 42689.2/5201;
+	for (int i = 0; i < pixelCount; ++i) {
+		int offset_rgba = i*4;
+		differents[i] = pow(tCanvas[offset_rgba + rr] - tReferenceImage[offset_rgba + rr], 2);
+		differents[i] += pow(tCanvas[offset_rgba + gg] - tReferenceImage[offset_rgba + gg], 2);
+		differents[i] += pow(tCanvas[offset_rgba + bb] - tReferenceImage[offset_rgba + bb], 2);
+	}
+	
+	for (int i = 0; i < img_height; i += tBrushSize) {
+		for (int j = 0; j < img_width; j += tBrushSize) {
+			double areaErr = 0;
+			int maxi = 0, maxj = 0, maxVal = -1;
+			for (int ni = i - tBrushSize / 2; ni <= i + tBrushSize / 2; ++ni) {
+				if (ni >= img_height || ni < 0)continue;
+				for (int nj = j - tBrushSize / 2; nj <= j + tBrushSize / 2; ++nj) {
+					if (nj >= img_width || nj < 0)continue;
+					areaErr += differents[ni*img_width + nj];
+					if (differents[ni*img_width + nj]>maxVal) {
+						maxVal = differents[ni*img_width + nj];
+						maxi = ni;
+						maxj = nj;
+					}
+				}
+			}
+			areaErr /= tBrushSize*tBrushSize;
+			if (areaErr > threshold) {
+				int offset_rgba = maxi*img_width * 4 + maxj * 4;
+				Stroke s((unsigned int)tBrushSize,maxj,maxi,tReferenceImage[offset_rgba+rr], tReferenceImage[offset_rgba + gg], tReferenceImage[offset_rgba + bb], tReferenceImage[offset_rgba + aa]);
+				strokes.push_back(s);
+			}
+		}
+	}
+	std::random_shuffle(strokes.begin(), strokes.end());
+	for (int i = 0; i < strokes.size(); ++i) {
+		Paint_Stroke(strokes[i]);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
