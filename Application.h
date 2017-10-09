@@ -1,6 +1,6 @@
 #pragma once
 #include <OpenglWidget.h>
-
+using Pixel = std::tuple<unsigned char, unsigned char, unsigned char>;
 class Stroke { // Data structure for holding painterly strokes.
 public:
 	Stroke(void);
@@ -12,7 +12,7 @@ public:
 	unsigned char r, g, b, a;	// Color
 };
 
-class Application :  public OpenglWidget
+class Application : public OpenglWidget
 {
 public:
 	Application();
@@ -31,7 +31,7 @@ public:
 	void Quant_Uniform();
 	void Quant_Populosity();
 	void MedianCut();
-
+	void getMedianCutColor(std::vector<Pixel>& color, unsigned char * rgb, int x, int y, int h, int w, int depth);
 	// Dithering
 	void Dither_Threshold();
 	void Dither_Random();
@@ -70,7 +70,7 @@ public:
 	void NPR_Paint();
 	void Paint_Stroke(const Stroke& s);
 	void NPR_Paint_Layer(unsigned char *tCanvas, unsigned char *tReferenceImage, int tBrushSize);
-	
+
 protected:
 	QImage mImageSrc, mImageSrcSecond;
 	QImage mImageDst;
@@ -82,15 +82,15 @@ protected:
 	bool bRenew;
 
 	// Image data
-	unsigned char* img_data,*img_data2;
-	int img_width,img_width2;
-	int img_height,img_height2;
+	unsigned char* img_data, *img_data2;
+	int img_width, img_width2;
+	int img_height, img_height2;
 
 	// you should swap the rr and bb if you read img_data directly without using To_RGB(), cause OGRE is in BGR format
-	enum {bb, gg, rr, aa}; 
-	enum {BLACK = 0, WHITE = 255};
+	enum { bb, gg, rr, aa };
+	enum { BLACK = 0, WHITE = 255 };
 
-	
+
 	Qt_Opengl_Framework* ui_instance;
 
 };
