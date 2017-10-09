@@ -17,7 +17,7 @@ Qt_Opengl_Framework* Qt_Opengl_Framework::getInstance()
 //****************************************************************************
 //
 // * Constructor 
-// ³s°Ê¥D¥\¯àµøµ¡ªºQt»POpengl°Ê§@
+// é€£å‹•ä¸»åŠŸèƒ½è¦–çª—çš„Qtèˆ‡Openglå‹•ä½œ
 //============================================================================
 
 Qt_Opengl_Framework::Qt_Opengl_Framework(QWidget *parent)
@@ -34,7 +34,7 @@ Qt_Opengl_Framework::Qt_Opengl_Framework(QWidget *parent)
 	connect(ui.actionGray, SIGNAL(triggered()), this, SLOT(OnGray()));
 	connect(ui.actionUniform_Quantization, SIGNAL(triggered()), this, SLOT(OnQuant_Uniform()));
 	connect(ui.actionPopulosity, SIGNAL(triggered()), this, SLOT(OnQuant_Populosity()));
-	connect(ui.actionMedianCut, SIGNAL(triggered()), this, SLOT(OnMedianCut()));
+	connect(ui.actionMedian_Cut, SIGNAL(triggered()), this, SLOT(OnMedianCut()));
 	//Dithering
 	connect(ui.actionNaive_Threshold_Dithering, SIGNAL(triggered()), this, SLOT(OnDither_Threshold()));
 	connect(ui.actionBrightness_Preserving_Threshold_Dithering, SIGNAL(triggered()), this, SLOT(OnDither_Bright()));
@@ -72,8 +72,8 @@ Qt_Opengl_Framework::~Qt_Opengl_Framework()
 
 //****************************************************************************
 //
-// * ªì©l¤Æªí³æ 
-// ³s°Ê¿ï¾Üªí³æªºQt»POpengl°Ê§@¡A¥B²£¥ÍAboutµøµ¡
+// * åˆå§‹åŒ–è¡¨å–® 
+// é€£å‹•é¸æ“‡è¡¨å–®çš„Qtèˆ‡Openglå‹•ä½œï¼Œä¸”ç”¢ç”ŸAboutè¦–çª—
 //============================================================================
 void Qt_Opengl_Framework::Initialize()
 {
@@ -90,7 +90,7 @@ void Qt_Opengl_Framework::Initialize()
 
 //****************************************************************************
 //
-// * ³]©wRendering System¬°OpenGL®É
+// * è¨­å®šRendering Systemç‚ºOpenGLæ™‚
 // 
 //============================================================================
 void Qt_Opengl_Framework::a_GL()
@@ -103,7 +103,7 @@ void Qt_Opengl_Framework::a_GL()
 
 //****************************************************************************
 //
-// * ³]©wRendering System¬°DirectX®É
+// * è¨­å®šRendering Systemç‚ºDirectXæ™‚
 // 
 //============================================================================
 void Qt_Opengl_Framework::a_DirectX()
@@ -116,7 +116,7 @@ void Qt_Opengl_Framework::a_DirectX()
 
 //****************************************************************************
 //
-// * ·í¨Ï¥ÎªÌ¨Ï¥ÎOpen¹ÏÀÉ¥\¯à®É¡A©Ò©I¥sªº¸ü¤JÀÉ®×¨ç¼Æ
+// * ç•¶ä½¿ç”¨è€…ä½¿ç”¨Openåœ–æª”åŠŸèƒ½æ™‚ï¼Œæ‰€å‘¼å«çš„è¼‰å…¥æª”æ¡ˆå‡½æ•¸
 // 
 //============================================================================
 void Qt_Opengl_Framework::loadFile(const QString &fileName)
@@ -145,7 +145,7 @@ void Qt_Opengl_Framework::loadFile(const QString &fileName)
 
 //****************************************************************************
 //
-// * ·í¨Ï¥ÎªÌ¨Ï¥ÎComposing¥\¯à®É¡A»İ­n¸ü¤J²Ä¤G­Ó¹ÏÀÉ®É©Ò©I¥s¸ü¤J¹ÏÀÉ¨ç¼Æ
+// * ç•¶ä½¿ç”¨è€…ä½¿ç”¨ComposingåŠŸèƒ½æ™‚ï¼Œéœ€è¦è¼‰å…¥ç¬¬äºŒå€‹åœ–æª”æ™‚æ‰€å‘¼å«è¼‰å…¥åœ–æª”å‡½æ•¸
 // 
 //============================================================================
 void Qt_Opengl_Framework::loadSecondFile( const QString &fileName )
@@ -176,7 +176,7 @@ void Qt_Opengl_Framework::loadSecondFile( const QString &fileName )
 
 //****************************************************************************
 //
-// * ±qµwºĞ¤¤¶}±Ò«ü©w¹ÏÀÉ
+// * å¾ç¡¬ç¢Ÿä¸­é–‹å•ŸæŒ‡å®šåœ–æª”
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnOpen()
@@ -191,7 +191,7 @@ void Qt_Opengl_Framework::OnOpen()
 
 //****************************************************************************
 //
-// * ¦s¤J¹ÏÀÉ¦ÜµwºĞ«ü©w¦ì¸m¤¤
+// * å­˜å…¥åœ–æª”è‡³ç¡¬ç¢ŸæŒ‡å®šä½ç½®ä¸­
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnSave()
@@ -203,7 +203,7 @@ void Qt_Opengl_Framework::OnSave()
 
 //****************************************************************************
 //
-// * µ²§ôµ{¦¡
+// * çµæŸç¨‹å¼
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnQuit()
@@ -213,7 +213,7 @@ void Qt_Opengl_Framework::OnQuit()
 
 //****************************************************************************
 //
-// * Åã¥ÜÃö©óµøµ¡
+// * é¡¯ç¤ºé—œæ–¼è¦–çª—
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnAbout()
@@ -224,7 +224,7 @@ void Qt_Opengl_Framework::OnAbout()
 
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜColor to Grayscale¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Color to GrayscaleåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnGray()
@@ -234,7 +234,7 @@ void Qt_Opengl_Framework::OnGray()
 
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜUniform Quantization¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Uniform QuantizationåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnQuant_Uniform()
@@ -244,7 +244,7 @@ void Qt_Opengl_Framework::OnQuant_Uniform()
 
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜPopulosity¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³PopulosityåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnQuant_Populosity()
@@ -263,7 +263,7 @@ void Qt_Opengl_Framework::OnMedianCut()
 
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜNaive Threshold Dithering¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Naive Threshold DitheringåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Threshold()
@@ -272,7 +272,7 @@ void Qt_Opengl_Framework::OnDither_Threshold()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜRandom Dithering¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Random DitheringåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Random()
@@ -281,7 +281,7 @@ void Qt_Opengl_Framework::OnDither_Random()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜFloyd-Steinberg Dithering¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Floyd-Steinberg DitheringåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_FS()
@@ -290,7 +290,7 @@ void Qt_Opengl_Framework::OnDither_FS()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜBrightness Preserving Threshold Dithering¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Brightness Preserving Threshold DitheringåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Bright()
@@ -299,7 +299,7 @@ void Qt_Opengl_Framework::OnDither_Bright()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜClustered Dithering¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Clustered DitheringåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Cluster()
@@ -308,7 +308,7 @@ void Qt_Opengl_Framework::OnDither_Cluster()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜColor Floyd-Steinberg Dithering¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Color Floyd-Steinberg DitheringåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Color()
@@ -320,7 +320,7 @@ void Qt_Opengl_Framework::OnDither_Color()
 
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜBox Filter¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Box FilteråŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Box()
@@ -329,7 +329,7 @@ void Qt_Opengl_Framework::OnFilter_Box()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜBartlett Filter¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Bartlett FilteråŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Bartlett()
@@ -338,7 +338,7 @@ void Qt_Opengl_Framework::OnFilter_Bartlett()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜGaussian Filter¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Gaussian FilteråŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Gaussian()
@@ -347,7 +347,7 @@ void Qt_Opengl_Framework::OnFilter_Gaussian()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜArbitrary-Size Gaussian Filter¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Arbitrary-Size Gaussian FilteråŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Gaussian_N()
@@ -357,7 +357,7 @@ void Qt_Opengl_Framework::OnFilter_Gaussian_N()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜEdge¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³EdgeåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Edge()
@@ -367,7 +367,7 @@ void Qt_Opengl_Framework::OnFilter_Edge()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜEnhance¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³EnhanceåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Enhance()
@@ -380,7 +380,7 @@ void Qt_Opengl_Framework::OnFilter_Enhance()
 
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜHalf Size¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Half SizeåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnHalf_Size()
@@ -389,7 +389,7 @@ void Qt_Opengl_Framework::OnHalf_Size()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜDouble Size¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Double SizeåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDouble_Size()
@@ -398,7 +398,7 @@ void Qt_Opengl_Framework::OnDouble_Size()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜArbitrary Uniform Scale scale¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Arbitrary Uniform Scale scaleåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnResize()
@@ -408,7 +408,7 @@ void Qt_Opengl_Framework::OnResize()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜArbitrary Rotation¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³Arbitrary RotationåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnRotate()
@@ -421,7 +421,7 @@ void Qt_Opengl_Framework::OnRotate()
 
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜOver¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³OveråŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_Over()
@@ -435,7 +435,7 @@ void Qt_Opengl_Framework::OnComp_Over()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜIn¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³InåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_In()
@@ -451,7 +451,7 @@ void Qt_Opengl_Framework::OnComp_In()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜOut¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³OutåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_Out()
@@ -466,7 +466,7 @@ void Qt_Opengl_Framework::OnComp_Out()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜAtop¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³AtopåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_Atop()
@@ -481,7 +481,7 @@ void Qt_Opengl_Framework::OnComp_Atop()
 }
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜXor¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³XoråŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_Xor()
@@ -500,7 +500,7 @@ void Qt_Opengl_Framework::OnComp_Xor()
 
 //****************************************************************************
 //
-// * ³s°ÊGUI«ö¶s¦ÜNPR Paint¥\¯à
+// * é€£å‹•GUIæŒ‰éˆ•è‡³NPR PaintåŠŸèƒ½
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnNPR()
@@ -512,7 +512,7 @@ void Qt_Opengl_Framework::OnNPR()
 
 //****************************************************************************
 //
-// * Åã¥Ü¿é¤JGaussian_N ªºMessageBox
+// * é¡¯ç¤ºè¼¸å…¥Gaussian_N çš„MessageBox
 // 
 //============================================================================
 void Qt_Opengl_Framework::mMyBox()
@@ -526,7 +526,7 @@ void Qt_Opengl_Framework::mMyBox()
 
 //****************************************************************************
 //
-// * Åã¥Ü¿é¤JResize ªºMessageBox
+// * é¡¯ç¤ºè¼¸å…¥Resize çš„MessageBox
 // 
 //============================================================================
 void Qt_Opengl_Framework::mMyBox1()
@@ -540,7 +540,7 @@ void Qt_Opengl_Framework::mMyBox1()
 
 //****************************************************************************
 //
-// * Åã¥Ü¿é¤JRotate ªºMessageBox
+// * é¡¯ç¤ºè¼¸å…¥Rotate çš„MessageBox
 // 
 //============================================================================
 void Qt_Opengl_Framework::mMyBox2()
@@ -554,7 +554,7 @@ void Qt_Opengl_Framework::mMyBox2()
 
 //****************************************************************************
 //
-// * «ö¤UEnter¶s®É¡Aµe­±ªì©l¤Æ
+// * æŒ‰ä¸‹Enteréˆ•æ™‚ï¼Œç•«é¢åˆå§‹åŒ–
 // 
 //============================================================================
 void Qt_Opengl_Framework::keyPressEvent(QKeyEvent *e)
