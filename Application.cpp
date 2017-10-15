@@ -1,4 +1,4 @@
-#include "Application.h"
+﻿#include "Application.h"
 #include "qt_opengl_framework.h"
 #include <cmath>
 #include <vector>
@@ -24,7 +24,7 @@ Application::~Application()
 //============================================================================
 void Application::createScene(void)
 {
-	
+
 	ui_instance = Qt_Opengl_Framework::getInstance();
 	//openImage("0.png");
 
@@ -290,7 +290,7 @@ void Application::getMedianCutColor(std::vector<Pixel>& color, unsigned char * r
 		// do the best to prevent repeat
 		Pixel tmp = vpCount[0].first;
 		for (int i = 0; i < vpCount.size(); ++i) {
-			auto loc = std::find(color.begin(),color.end(),vpCount[i].first);
+			auto loc = std::find(color.begin(), color.end(), vpCount[i].first);
 			if (loc == color.end()) {
 				tmp = vpCount[i].first;
 				break;
@@ -304,11 +304,11 @@ void Application::getMedianCutColor(std::vector<Pixel>& color, unsigned char * r
 		// cut
 		if (h > w) {
 			getMedianCutColor(color, rgb, x, y, h / 2, w, depth - 1);
-			getMedianCutColor(color, rgb, x+h/2, y, h/2, w, depth - 1);
+			getMedianCutColor(color, rgb, x + h / 2, y, h / 2, w, depth - 1);
 		}
 		else {
-			getMedianCutColor(color, rgb, x, y, h, w/2, depth - 1);
-			getMedianCutColor(color, rgb, x, y + w/2, h, w/2, depth - 1);
+			getMedianCutColor(color, rgb, x, y, h, w / 2, depth - 1);
+			getMedianCutColor(color, rgb, x, y + w / 2, h, w / 2, depth - 1);
 		}
 	}
 }
@@ -327,7 +327,7 @@ void Application::MedianCut() {
 	}
 	//cut picture to 256 pices
 	getMedianCutColor(colors, rgb, 0, 0, img_height, img_width, 8); // 8bits
-	//
+																	//
 	std::set<Pixel> allColor;
 	for (int i = 0; i < img_height; ++i) {
 		for (int j = 0; j < img_width; ++j) {
@@ -708,7 +708,7 @@ void Application::filtering(double **filter, int n)
 			int offset_rgba = i*img_width * 4 + j * 4;
 			float newColor[3] = { 0 };
 
-			for (int ni = i - subt; ni < i-subt+n; ++ni) {
+			for (int ni = i - subt; ni < i - subt + n; ++ni) {
 				if (ni >= img_height || ni < 0)continue;
 				for (int nj = j - subt; nj < j - subt + n; ++nj) {
 					if (nj >= img_width || nj < 0)continue;
@@ -722,9 +722,9 @@ void Application::filtering(double **filter, int n)
 				if (newColor[k] > 255)newColor[k] = 255;
 				if (newColor[k] < 0) newColor[k] = 0;
 			}
-			if (n % 2 == 0 && i-1>0 && j-1>0) {
+			if (n % 2 == 0 && i - 1>0 && j - 1>0) {
 				for (int k = -1; k <= 0; ++k)for (int l = -1; l <= 0; ++l) {
-					offset_rgba = (i+k)*img_width * 4 + (j+l) * 4;
+					offset_rgba = (i + k)*img_width * 4 + (j + l) * 4;
 					img_data[offset_rgba + rr] = newColor[0];
 					img_data[offset_rgba + gg] = newColor[1];
 					img_data[offset_rgba + bb] = newColor[2];
@@ -740,7 +740,7 @@ void Application::filtering(double **filter, int n)
 		}
 	}
 
-	
+
 	delete[] rgb;
 	mImageDst = QImage(img_data, img_width, img_height, QImage::Format_ARGB32);
 	renew();
@@ -819,11 +819,11 @@ void Application::Filter_Gaussian()
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Filter_Gaussian_N(unsigned int N)
 {
+	if (N <= 0)return;
 	double **weight = new double*[N];
-
 	for (int i = 0; i < N; ++i) weight[i] = new double[N]();
 	double sum = 0.0;
-	for (int r = N/2; r < N; ++r) {
+	for (int r = N / 2; r < N; ++r) {
 		weight[0][r] = 1;
 		for (int i = 2; i <= (N - r - 1); ++i) {
 			weight[0][r] /= i;
@@ -970,7 +970,8 @@ void Application::Double_Size()
 //
 ///////////////////////////////////////////////////////////////////////////////
 void Application::resample_src(int u, int v, float ww, unsigned char* rgba)
-{	
+{
+	//
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -981,6 +982,7 @@ void Application::resample_src(int u, int v, float ww, unsigned char* rgba)
 ///////////////////////////////////////////////////////////////////////////////
 void Application::Resize(float scale)
 {
+	if (scale <= 0) return;
 	int new_width = img_width * scale, new_height = img_height * scale;
 	unsigned char *new_img_data = new unsigned char[new_height * new_width * 4];
 	unsigned char *rgb = this->To_RGB();
@@ -1028,13 +1030,15 @@ void Application::Rotate(float angleDegrees)
 			// convert back
 			nx += halfW;
 			ny = halfH - ny;
+			ny = (int)(ny + 0.5);
+			nx = (int)(nx + 0.5);
 			// bound check
 			if (nx >= img_width || nx < 0)
 				continue;
 			if (ny >= img_height || ny < 0)
 				continue;
 			//assign pixels
-			offset_rgb = (int)ny *img_width * 3 + (int)nx * 3;
+			offset_rgb = ny *img_width * 3 + nx * 3;
 			img_data[offset_rgba + rr] = rgb[offset_rgb + rr];
 			img_data[offset_rgba + gg] = rgb[offset_rgb + gg];
 			img_data[offset_rgba + bb] = rgb[offset_rgb + bb];
@@ -1180,7 +1184,7 @@ void Application::NPR_Paint()
 	memcpy(copy_data, img_data, sizeof(unsigned char)*img_width * img_height * 4);
 	memcpy(canvas, img_data, sizeof(unsigned char)*img_width * img_height * 4);
 	const int brushCount = 4;
-	const int brushSizes[brushCount] = {15,8,4,2};
+	const int brushSizes[brushCount] = { 15,8,5,3 };
 	for (int i = 0; i < brushCount; ++i) {
 		memcpy(img_data, copy_data, sizeof(unsigned char)*img_width * img_height * 4);
 		Filter_Gaussian_N(brushSizes[i]);
@@ -1199,14 +1203,14 @@ void Application::NPR_Paint_Layer(unsigned char *tCanvas, unsigned char *tRefere
 	int pixelCount = img_width * img_height;
 	std::vector<int> differents(pixelCount);
 	std::vector<Stroke> strokes;
-	double threshold = 42689.2/5201;
+	double threshold = 42689.2 / 5201;
 	for (int i = 0; i < pixelCount; ++i) {
-		int offset_rgba = i*4;
+		int offset_rgba = i * 4;
 		differents[i] = pow(tCanvas[offset_rgba + rr] - tReferenceImage[offset_rgba + rr], 2);
 		differents[i] += pow(tCanvas[offset_rgba + gg] - tReferenceImage[offset_rgba + gg], 2);
 		differents[i] += pow(tCanvas[offset_rgba + bb] - tReferenceImage[offset_rgba + bb], 2);
 	}
-	
+
 	for (int i = 0; i < img_height; i += tBrushSize) {
 		for (int j = 0; j < img_width; j += tBrushSize) {
 			double areaErr = 0;
@@ -1226,7 +1230,7 @@ void Application::NPR_Paint_Layer(unsigned char *tCanvas, unsigned char *tRefere
 			areaErr /= tBrushSize*tBrushSize;
 			if (areaErr > threshold) {
 				int offset_rgba = maxi*img_width * 4 + maxj * 4;
-				Stroke s((unsigned int)tBrushSize,maxj,maxi,tReferenceImage[offset_rgba+rr], tReferenceImage[offset_rgba + gg], tReferenceImage[offset_rgba + bb], tReferenceImage[offset_rgba + aa]);
+				Stroke s((unsigned int)tBrushSize, maxj, maxi, tReferenceImage[offset_rgba + rr], tReferenceImage[offset_rgba + gg], tReferenceImage[offset_rgba + bb], tReferenceImage[offset_rgba + aa]);
 				strokes.push_back(s);
 			}
 		}
@@ -1246,6 +1250,7 @@ void Application::NPR_Paint_Layer(unsigned char *tCanvas, unsigned char *tRefere
 void Application::Paint_Stroke(const Stroke& s)
 {
 	int radius_squared = (int)s.radius * (int)s.radius;
+	radius_squared -= rand() % (int)pow(s.radius,1.5);
 	for (int x_off = -((int)s.radius); x_off <= (int)s.radius; x_off++)
 	{
 		for (int y_off = -((int)s.radius); y_off <= (int)s.radius; y_off++)
@@ -1259,14 +1264,14 @@ void Application::Paint_Stroke(const Stroke& s)
 				int dist_squared = x_off * x_off + y_off * y_off;
 				int offset_rgba = (y_loc * img_width + x_loc) * 4;
 
-				if (dist_squared <= radius_squared)
+				if (dist_squared <= radius_squared)//內
 				{
 					img_data[offset_rgba + rr] = s.r;
 					img_data[offset_rgba + gg] = s.g;
 					img_data[offset_rgba + bb] = s.b;
 					img_data[offset_rgba + aa] = s.a;
 				}
-				else if (dist_squared == radius_squared + 1)
+				else if (dist_squared == radius_squared + 1)//邊界暗一點
 				{
 					img_data[offset_rgba + rr] = (img_data[offset_rgba + rr] + s.r) / 2;
 					img_data[offset_rgba + gg] = (img_data[offset_rgba + gg] + s.g) / 2;
@@ -1299,5 +1304,4 @@ Stroke::Stroke(unsigned int iradius, unsigned int ix, unsigned int iy,
 	radius(iradius), x(ix), y(iy), r(ir), g(ig), b(ib), a(ia)
 {
 }
-
 

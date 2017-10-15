@@ -2,7 +2,7 @@
 Qt_Opengl_Framework* Qt_Opengl_Framework::single = NULL;
 Qt_Opengl_Framework* Qt_Opengl_Framework::getInstance()
 {
-	if(! single)
+	if (!single)
 	{
 		single = new Qt_Opengl_Framework();
 		single->Initialize();
@@ -17,7 +17,7 @@ Qt_Opengl_Framework* Qt_Opengl_Framework::getInstance()
 //****************************************************************************
 //
 // * Constructor 
-// é€£å‹•ä¸»åŠŸèƒ½è¦–çª—çš„Qtèˆ‡Openglå‹•ä½œ
+// ³s°Ê¥D¥\¯àµøµ¡ªºQt»POpengl°Ê§@
 //============================================================================
 
 Qt_Opengl_Framework::Qt_Opengl_Framework(QWidget *parent)
@@ -72,13 +72,13 @@ Qt_Opengl_Framework::~Qt_Opengl_Framework()
 
 //****************************************************************************
 //
-// * åˆå§‹åŒ–è¡¨å–® 
-// é€£å‹•é¸æ“‡è¡¨å–®çš„Qtèˆ‡Openglå‹•ä½œï¼Œä¸”ç”¢ç”ŸAboutè¦–çª—
+// * ªì©l¤Æªí³æ 
+// ³s°Ê¿ï¾Üªí³æªºQt»POpengl°Ê§@¡A¥B²£¥ÍAboutµøµ¡
 //============================================================================
 void Qt_Opengl_Framework::Initialize()
 {
 	rendere_dialog = new QDialog();
-	About_dialog= new QDialog();
+	About_dialog = new QDialog();
 	rendere_dialog->setModal(true);
 	About_dialog->setModal(true);
 	rendere_prompt.setupUi(rendere_dialog);
@@ -90,12 +90,12 @@ void Qt_Opengl_Framework::Initialize()
 
 //****************************************************************************
 //
-// * è¨­å®šRendering Systemç‚ºOpenGLæ™‚
+// * ³]©wRendering System¬°OpenGL®É
 // 
 //============================================================================
 void Qt_Opengl_Framework::a_GL()
 {
-	plugin =("OpenGL Rendering Subsystem");
+	plugin = ("OpenGL Rendering Subsystem");
 	application = new Application;
 	application->setMouseTracking(true);
 	rendere_dialog->hide();
@@ -103,12 +103,12 @@ void Qt_Opengl_Framework::a_GL()
 
 //****************************************************************************
 //
-// * è¨­å®šRendering Systemç‚ºDirectXæ™‚
+// * ³]©wRendering System¬°DirectX®É
 // 
 //============================================================================
 void Qt_Opengl_Framework::a_DirectX()
 {
-	plugin =("Direct3D9 Rendering Subsystem");
+	plugin = ("Direct3D9 Rendering Subsystem");
 	application = new Application;
 	application->setMouseTracking(true);
 	rendere_dialog->hide();
@@ -116,7 +116,7 @@ void Qt_Opengl_Framework::a_DirectX()
 
 //****************************************************************************
 //
-// * ç•¶ä½¿ç”¨è€…ä½¿ç”¨Openåœ–æª”åŠŸèƒ½æ™‚ï¼Œæ‰€å‘¼å«çš„è¼‰å…¥æª”æ¡ˆå‡½æ•¸
+// * ·í¨Ï¥ÎªÌ¨Ï¥ÎOpen¹ÏÀÉ¥\¯à®É¡A©Ò©I¥sªº¸ü¤JÀÉ®×¨ç¼Æ
 // 
 //============================================================================
 void Qt_Opengl_Framework::loadFile(const QString &fileName)
@@ -135,7 +135,7 @@ void Qt_Opengl_Framework::loadFile(const QString &fileName)
 #ifndef QT_NO_CURSOR
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-	
+
 #ifndef QT_NO_CURSOR
 	QApplication::restoreOverrideCursor();
 #endif
@@ -145,10 +145,10 @@ void Qt_Opengl_Framework::loadFile(const QString &fileName)
 
 //****************************************************************************
 //
-// * ç•¶ä½¿ç”¨è€…ä½¿ç”¨ComposingåŠŸèƒ½æ™‚ï¼Œéœ€è¦è¼‰å…¥ç¬¬äºŒå€‹åœ–æª”æ™‚æ‰€å‘¼å«è¼‰å…¥åœ–æª”å‡½æ•¸
+// * ·í¨Ï¥ÎªÌ¨Ï¥ÎComposing¥\¯à®É¡A»Ý­n¸ü¤J²Ä¤G­Ó¹ÏÀÉ®É©Ò©I¥s¸ü¤J¹ÏÀÉ¨ç¼Æ
 // 
 //============================================================================
-void Qt_Opengl_Framework::loadSecondFile( const QString &fileName )
+void Qt_Opengl_Framework::loadSecondFile(const QString &fileName)
 {
 	QFile file(fileName);
 
@@ -164,7 +164,7 @@ void Qt_Opengl_Framework::loadSecondFile( const QString &fileName )
 #ifndef QT_NO_CURSOR
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-	
+
 #ifndef QT_NO_CURSOR
 	QApplication::restoreOverrideCursor();
 #endif
@@ -176,14 +176,14 @@ void Qt_Opengl_Framework::loadSecondFile( const QString &fileName )
 
 //****************************************************************************
 //
-// * å¾žç¡¬ç¢Ÿä¸­é–‹å•ŸæŒ‡å®šåœ–æª”
+// * ±qµwºÐ¤¤¶}±Ò«ü©w¹ÏÀÉ
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnOpen()
 {
 
-	QString fileName = QFileDialog::getOpenFileName(this,"OpenImage","../../media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)" ));
-	if (!fileName.isEmpty()){
+	QString fileName = QFileDialog::getOpenFileName(this, "OpenImage", "../../media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)"));
+	if (!fileName.isEmpty()) {
 		loadFile(fileName);
 		Nowfilename = fileName;
 	}
@@ -191,19 +191,19 @@ void Qt_Opengl_Framework::OnOpen()
 
 //****************************************************************************
 //
-// * å­˜å…¥åœ–æª”è‡³ç¡¬ç¢ŸæŒ‡å®šä½ç½®ä¸­
+// * ¦s¤J¹ÏÀÉ¦ÜµwºÐ«ü©w¦ì¸m¤¤
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnSave()
 {
-	QString fileName = QFileDialog::getSaveFileName(this,"SaveImage",".",tr("PNG (*.png);;JPEG (*.jpg)" ));
+	QString fileName = QFileDialog::getSaveFileName(this, "SaveImage", ".", tr("PNG (*.png);;JPEG (*.jpg)"));
 	if (!fileName.isEmpty())
 		application->saveImage(fileName);
 }
 
 //****************************************************************************
 //
-// * çµæŸç¨‹å¼
+// * µ²§ôµ{¦¡
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnQuit()
@@ -213,7 +213,7 @@ void Qt_Opengl_Framework::OnQuit()
 
 //****************************************************************************
 //
-// * é¡¯ç¤ºé—œæ–¼è¦–çª—
+// * Åã¥ÜÃö©óµøµ¡
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnAbout()
@@ -224,7 +224,7 @@ void Qt_Opengl_Framework::OnAbout()
 
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Color to GrayscaleåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜColor to Grayscale¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnGray()
@@ -234,7 +234,7 @@ void Qt_Opengl_Framework::OnGray()
 
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Uniform QuantizationåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜUniform Quantization¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnQuant_Uniform()
@@ -244,7 +244,7 @@ void Qt_Opengl_Framework::OnQuant_Uniform()
 
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³PopulosityåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜPopulosity¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnQuant_Populosity()
@@ -263,7 +263,7 @@ void Qt_Opengl_Framework::OnMedianCut()
 
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Naive Threshold DitheringåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜNaive Threshold Dithering¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Threshold()
@@ -272,7 +272,7 @@ void Qt_Opengl_Framework::OnDither_Threshold()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Random DitheringåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜRandom Dithering¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Random()
@@ -281,7 +281,7 @@ void Qt_Opengl_Framework::OnDither_Random()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Floyd-Steinberg DitheringåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜFloyd-Steinberg Dithering¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_FS()
@@ -290,7 +290,7 @@ void Qt_Opengl_Framework::OnDither_FS()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Brightness Preserving Threshold DitheringåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜBrightness Preserving Threshold Dithering¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Bright()
@@ -299,7 +299,7 @@ void Qt_Opengl_Framework::OnDither_Bright()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Clustered DitheringåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜClustered Dithering¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Cluster()
@@ -308,7 +308,7 @@ void Qt_Opengl_Framework::OnDither_Cluster()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Color Floyd-Steinberg DitheringåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜColor Floyd-Steinberg Dithering¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDither_Color()
@@ -320,7 +320,7 @@ void Qt_Opengl_Framework::OnDither_Color()
 
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Box FilteråŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜBox Filter¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Box()
@@ -329,7 +329,7 @@ void Qt_Opengl_Framework::OnFilter_Box()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Bartlett FilteråŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜBartlett Filter¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Bartlett()
@@ -338,7 +338,7 @@ void Qt_Opengl_Framework::OnFilter_Bartlett()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Gaussian FilteråŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜGaussian Filter¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Gaussian()
@@ -347,7 +347,7 @@ void Qt_Opengl_Framework::OnFilter_Gaussian()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Arbitrary-Size Gaussian FilteråŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜArbitrary-Size Gaussian Filter¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Gaussian_N()
@@ -357,22 +357,22 @@ void Qt_Opengl_Framework::OnFilter_Gaussian_N()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³EdgeåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜEdge¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Edge()
 {
-	
+
 	application->Filter_Edge();
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³EnhanceåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜEnhance¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnFilter_Enhance()
 {
-	
+
 	application->Filter_Enhance();
 }
 
@@ -380,7 +380,7 @@ void Qt_Opengl_Framework::OnFilter_Enhance()
 
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Half SizeåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜHalf Size¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnHalf_Size()
@@ -389,7 +389,7 @@ void Qt_Opengl_Framework::OnHalf_Size()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Double SizeåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜDouble Size¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnDouble_Size()
@@ -398,7 +398,7 @@ void Qt_Opengl_Framework::OnDouble_Size()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Arbitrary Uniform Scale scaleåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜArbitrary Uniform Scale scale¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnResize()
@@ -408,7 +408,7 @@ void Qt_Opengl_Framework::OnResize()
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³Arbitrary RotationåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜArbitrary Rotation¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnRotate()
@@ -421,78 +421,78 @@ void Qt_Opengl_Framework::OnRotate()
 
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³OveråŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜOver¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_Over()
 {
-	QString fileName = QFileDialog::getOpenFileName(this,"OpenImage","/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)" ));
-	if (!fileName.isEmpty()){
+	QString fileName = QFileDialog::getOpenFileName(this, "OpenImage", "/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)"));
+	if (!fileName.isEmpty()) {
 		loadSecondFile(fileName);
 		application->Comp_Over();
 	}
-	
+
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³InåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜIn¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_In()
 {
 
-	QString fileName = QFileDialog::getOpenFileName(this,"OpenImage","/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)" ));
-	if (!fileName.isEmpty()){
+	QString fileName = QFileDialog::getOpenFileName(this, "OpenImage", "/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)"));
+	if (!fileName.isEmpty()) {
 		loadSecondFile(fileName);
 		application->Comp_In();
 	}
 
-	
+
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³OutåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜOut¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_Out()
 {
-	QString fileName = QFileDialog::getOpenFileName(this,"OpenImage","/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)" ));
-	if (!fileName.isEmpty()){
+	QString fileName = QFileDialog::getOpenFileName(this, "OpenImage", "/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)"));
+	if (!fileName.isEmpty()) {
 		loadSecondFile(fileName);
 		application->Comp_Out();
 	}
 
-	
+
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³AtopåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜAtop¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_Atop()
 {
-	QString fileName = QFileDialog::getOpenFileName(this,"OpenImage","/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)" ));
-	if (!fileName.isEmpty()){
+	QString fileName = QFileDialog::getOpenFileName(this, "OpenImage", "/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)"));
+	if (!fileName.isEmpty()) {
 		loadSecondFile(fileName);
 		application->Comp_Atop();
 	}
 
-	
+
 }
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³XoråŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜXor¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnComp_Xor()
 {
-	QString fileName = QFileDialog::getOpenFileName(this,"OpenImage","/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)" ));
-	if (!fileName.isEmpty()){
+	QString fileName = QFileDialog::getOpenFileName(this, "OpenImage", "/Qt_Opengl_Framework/media/materials/textures", tr("PNG (*.png);;JPEG (*.jpg)"));
+	if (!fileName.isEmpty()) {
 		loadSecondFile(fileName);
 		application->Comp_Xor();
 	}
 
-	
+
 }
 
 
@@ -500,7 +500,7 @@ void Qt_Opengl_Framework::OnComp_Xor()
 
 //****************************************************************************
 //
-// * é€£å‹•GUIæŒ‰éˆ•è‡³NPR PaintåŠŸèƒ½
+// * ³s°ÊGUI«ö¶s¦ÜNPR Paint¥\¯à
 // 
 //============================================================================
 void Qt_Opengl_Framework::OnNPR()
@@ -512,12 +512,12 @@ void Qt_Opengl_Framework::OnNPR()
 
 //****************************************************************************
 //
-// * é¡¯ç¤ºè¼¸å…¥Gaussian_N çš„MessageBox
+// * Åã¥Ü¿é¤JGaussian_N ªºMessageBox
 // 
 //============================================================================
 void Qt_Opengl_Framework::mMyBox()
 {
-	MBOX=new Ui_MyMessageBox();
+	MBOX = new Ui_MyMessageBox();
 	MBOX->show();
 	MBOX->setWindowTitle("Gaussian_N");
 	MBOX->label->setText("Value N");
@@ -526,12 +526,12 @@ void Qt_Opengl_Framework::mMyBox()
 
 //****************************************************************************
 //
-// * é¡¯ç¤ºè¼¸å…¥Resize çš„MessageBox
+// * Åã¥Ü¿é¤JResize ªºMessageBox
 // 
 //============================================================================
 void Qt_Opengl_Framework::mMyBox1()
 {
-	MBOX=new Ui_MyMessageBox();
+	MBOX = new Ui_MyMessageBox();
 	MBOX->show();
 	MBOX->setWindowTitle("Resize");
 	MBOX->label->setText("Scale");
@@ -540,12 +540,12 @@ void Qt_Opengl_Framework::mMyBox1()
 
 //****************************************************************************
 //
-// * é¡¯ç¤ºè¼¸å…¥Rotate çš„MessageBox
+// * Åã¥Ü¿é¤JRotate ªºMessageBox
 // 
 //============================================================================
 void Qt_Opengl_Framework::mMyBox2()
 {
-	MBOX=new Ui_MyMessageBox();
+	MBOX = new Ui_MyMessageBox();
 	MBOX->show();
 	MBOX->setWindowTitle("Rotate");
 	MBOX->label->setText("Angles");
@@ -554,12 +554,12 @@ void Qt_Opengl_Framework::mMyBox2()
 
 //****************************************************************************
 //
-// * æŒ‰ä¸‹Enteréˆ•æ™‚ï¼Œç•«é¢åˆå§‹åŒ–
+// * «ö¤UEnter¶s®É¡Aµe­±ªì©l¤Æ
 // 
 //============================================================================
 void Qt_Opengl_Framework::keyPressEvent(QKeyEvent *e)
 {
-	if (e->key()==Qt::Key_Enter || e->key()==Qt::Key_Return)
+	if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)
 	{
 		loadFile(Nowfilename);
 	}

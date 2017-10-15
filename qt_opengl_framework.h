@@ -27,7 +27,7 @@ public:
 	QLabel* fps_text;
 	Ui::Qt_Opengl_FrameworkClass ui;
 	QString Nowfilename;
-	
+
 
 private:
 	void Initialize();
@@ -36,9 +36,9 @@ private:
 	Application *application;
 	static Qt_Opengl_Framework *single;
 	OpenglRenderThread rt;
-	
 
-private slots:
+
+	private slots:
 	void a_GL();
 	void a_DirectX();
 	void mMyBox();
@@ -85,7 +85,7 @@ private slots:
 
 protected:
 	virtual void keyPressEvent(QKeyEvent *e);
-	
+
 };
 
 #endif // Qt_Opengl_Framework_H
