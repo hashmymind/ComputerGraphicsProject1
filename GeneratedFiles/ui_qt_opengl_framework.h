@@ -31,7 +31,6 @@ public:
     QAction *actionGray;
     QAction *actionUniform_Quantization;
     QAction *actionPopulosity;
-	QAction *actionMedianCut;
     QAction *actionNaive_Threshold_Dithering;
     QAction *actionBrightness_Preserving_Threshold_Dithering;
     QAction *actionRandom;
@@ -57,6 +56,7 @@ public:
     QAction *actionSave;
     QAction *actionNPR;
     QAction *actionAbout;
+    QAction *actionMedian_Cut;
     QWidget *centralWidget;
     QLabel *label;
     QMenuBar *menuBar;
@@ -84,8 +84,6 @@ public:
         actionUniform_Quantization->setObjectName(QStringLiteral("actionUniform_Quantization"));
         actionPopulosity = new QAction(Qt_Opengl_FrameworkClass);
         actionPopulosity->setObjectName(QStringLiteral("actionPopulosity"));
-		actionMedianCut = new QAction(Qt_Opengl_FrameworkClass);
-		actionMedianCut->setObjectName(QStringLiteral("actionMedianCut"));
         actionNaive_Threshold_Dithering = new QAction(Qt_Opengl_FrameworkClass);
         actionNaive_Threshold_Dithering->setObjectName(QStringLiteral("actionNaive_Threshold_Dithering"));
         actionBrightness_Preserving_Threshold_Dithering = new QAction(Qt_Opengl_FrameworkClass);
@@ -136,6 +134,8 @@ public:
         actionNPR->setObjectName(QStringLiteral("actionNPR"));
         actionAbout = new QAction(Qt_Opengl_FrameworkClass);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
+        actionMedian_Cut = new QAction(Qt_Opengl_FrameworkClass);
+        actionMedian_Cut->setObjectName(QStringLiteral("actionMedian_Cut"));
         centralWidget = new QWidget(Qt_Opengl_FrameworkClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         label = new QLabel(centralWidget);
@@ -144,7 +144,7 @@ public:
         Qt_Opengl_FrameworkClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(Qt_Opengl_FrameworkClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 22));
+        menuBar->setGeometry(QRect(0, 0, 600, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuColor = new QMenu(menuBar);
@@ -179,7 +179,7 @@ public:
         menuColor->addAction(actionGray);
         menuColor->addAction(actionUniform_Quantization);
         menuColor->addAction(actionPopulosity);
-		menuColor->addAction(actionMedianCut);
+        menuColor->addAction(actionMedian_Cut);
         menuDithering->addAction(actionNaive_Threshold_Dithering);
         menuDithering->addAction(actionBrightness_Preserving_Threshold_Dithering);
         menuDithering->addAction(actionRandom);
@@ -210,13 +210,12 @@ public:
 
     void retranslateUi(QMainWindow *Qt_Opengl_FrameworkClass)
     {
-        Qt_Opengl_FrameworkClass->setWindowTitle(QApplication::translate("Qt_Opengl_FrameworkClass", "Computer Graphics Project1 B10515009", Q_NULLPTR));
+        Qt_Opengl_FrameworkClass->setWindowTitle(QApplication::translate("Qt_Opengl_FrameworkClass", "B10515009", Q_NULLPTR));
         actionExit->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Exit", Q_NULLPTR));
         actionOpen->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Open", Q_NULLPTR));
         actionGray->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Gray", Q_NULLPTR));
         actionUniform_Quantization->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Uniform Quantization", Q_NULLPTR));
         actionPopulosity->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Populosity", Q_NULLPTR));
-		actionMedianCut->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Median Cut", Q_NULLPTR));
         actionNaive_Threshold_Dithering->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Naive Threshold Dithering", Q_NULLPTR));
         actionBrightness_Preserving_Threshold_Dithering->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Brightness Preserving Threshold", Q_NULLPTR));
         actionRandom->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Random ", Q_NULLPTR));
@@ -242,6 +241,7 @@ public:
         actionSave->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Save", Q_NULLPTR));
         actionNPR->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "NPR", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "About", Q_NULLPTR));
+        actionMedian_Cut->setText(QApplication::translate("Qt_Opengl_FrameworkClass", "Median Cut", Q_NULLPTR));
         label->setText(QString());
         menuFile->setTitle(QApplication::translate("Qt_Opengl_FrameworkClass", "File", Q_NULLPTR));
         menuColor->setTitle(QApplication::translate("Qt_Opengl_FrameworkClass", "Color", Q_NULLPTR));
